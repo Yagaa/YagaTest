@@ -1,17 +1,10 @@
 <?php
+error_reporting(E_ALL);
+require 'Router.php';
+define("CONF_PATH", __DIR__."/Conf");
+define("MODEL_PATH", __DIR__."/Model");
+define("API_PATH", __DIR__."/Api");
 
-function parseIncomingParams() {
-    $parameters = array();
+$Api = new Router();
+$Api->init();
 
-    if (isset($_SERVER['QUERY_STRING'])) {
-        parse_str($_SERVER['QUERY_STRING'], $parameters);
-    }
-
-    $return["parameters"] = $parameters;
-    $return["method"] = $_SERVER['REQUEST_METHOD'];
-    return $return;
-}
-
-$re = new test();
-$ress = $re->parseIncomingParams();
-die(json_encode($ress));

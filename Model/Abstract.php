@@ -1,14 +1,14 @@
 <?php
-
-class AbtractDb {
+class Model_Abstract {
 
     public $isConnected;
     protected $datab;
 
-    public function __construct($username, $password, $host, $dbname, $options = array()) {
+    public function __construct() {
+        $configs = parse_ini_file(CONF_PATH."/database.ini");
         $this->isConnected = true;
         try {
-            $this->datab = new PDO("mysql:host={$host};dbname={$dbname};charset=utf8", $username, $password, $options);
+            $this->datab = new PDO("mysql:host={$configs['db.host']};dbname={$configs['db.dbname']};charset=utf8", $configs['db.username'], $configs['db.password'], $configs['db.option']);
             $this->datab->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->datab->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -46,6 +46,7 @@ class AbtractDb {
         try {
             $stmt = $this->datab->prepare($query);
             $stmt->execute($params);
+            return $stmt->rowCount();
         } catch (PDOException $e) {
             throw new Exception($e->getMessage());
         }

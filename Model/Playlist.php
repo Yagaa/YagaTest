@@ -1,21 +1,20 @@
 <?php
 require MODEL_PATH."/Abstract.php";
 
-Class Model_User extends Model_Abstract {
+Class Model_Playlist extends Model_Abstract {
     
-    private $table = "user";
+    private $table = "playlist";
 
-    public function GetUser($id){
+    public function GetPlaylist($id){
         $query = "SELECT * FROM ".$this->table." WHERE id = ? ;";
         $row = $this->getRow($query, array($id));
         
         return $row;
     }
 
-    public function DeleteUser($id){
+    public function DeletePlaylist($id){
         $query = "DELETE FROM ".$this->table." WHERE id = ? ;";
         $row = $this->deleteRow($query, array($id));
-        
         return $row;
     }
 }
