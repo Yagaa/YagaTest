@@ -6,5 +6,5 @@ define("MODEL_PATH", __DIR__."/Model");
 define("API_PATH", __DIR__."/Api");
 
 $Api = new Router();
-$Api->init();
+$Api->init($_REQUEST);
 

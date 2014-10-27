@@ -17,4 +17,10 @@ Class Model_Playlist extends Model_Abstract {
         $row = $this->deleteRow($query, array($id));
         return $row;
     }
+
+    public function DeleteSongFromPlaylist($id){
+        $query = "DELETE FROM ".$this->table." WHERE id = ? ;";
+        $row = $this->deleteRow($query, array($id));
+        return $row;
+    }
 }

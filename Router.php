@@ -3,93 +3,89 @@
 Class Router {
 
     
-    private $ApiAction = "";
+    private $ApiController = "";
     private $ApiMethod = "";
-    public function init($request){
-        require API_PATH. "/User.php";
-        $obj = new Api_User();
-        $res = call_user_method("GetUser", $obj, array("id" => 1));
-        
-        $router = new Router();
-        
-        
-        $router->get('/song', array('controller' => 'Song', 'action' => 'playlists'));
-        
-        $router->get('/song/:id', array('controller' => 'Song', 'action' => 'playlist'));
-        $router->delete('/song/:id', $song->deletePlaylist('@id'));
-        
+    private $routes = array(
+        "User","Song","Playlist"
+    );
+    
+    private $methods = array(
+        "GET"       =>  "Get",
+        "POST"      =>  "Create",
+        "PUT"       =>  "Update",
+        "DELETE"    =>  "Delete"
+    );
+    public function init(){
         
         $request["method"] = $_SERVER['REQUEST_METHOD'];
         $request["request"] = explode("/", $_SERVER['REQUEST_URI']);
         
-        $this->ApiAction = $request['request'][1];
-        $this->ApiMethod = $request['method'];
-        $params = array();
+        $this->CheckMethodRequest($request["method"]);
+
+        $params = $this->prepareParams($request["method"],$request['request']);
         
-        switch ($this->ApiAction){
-            case 'user' :
-                $class = "User";
-                break;
-                
-            case 'song' :
-                $class = "Song";
-                break;
-                
-            case 'playlist' :
-                $class = "Playlist";
-                break;
-                
-            default :
-                header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-                echo '{"error" : "Action Not Found"}';
-                return;
-        }
+        $this->ApiController = ucfirst(strtolower($request['request'][1]));
+        $this->ApiAction = $this->methods[$request['method']].$this->ApiController;
         
-        switch ($this->ApiMethod) {
-            case 'GET' :
-                $action = "Get";
-                $params['id'] = $request['request'][2];
-                $params['params'] = $_GET;
-                break;
-                
-            case 'POST' :
-                $action = "Create";
-                $params['params'] = $_POST;
-                break;
-                
-            case 'PUT' :
-                $action = "Update";
-                $params['id'] = $request['request'][2];
-                $params['params'] = $_REQUEST;
-                break;
-                
-            case 'DELETE' :
-                $action = "Delete";
-                $params['id'] = $request['request'][2];
-                break;
-                
-            default :
+        if(in_array($this->ApiController,$this->routes)){
+            $this->LoadClassApi($this->ApiController);
+            $className = "Api_".$this->ApiController;
+            $ApiClass = new $className($params);  
+            
+            if(method_exists($ApiClass, $this->ApiAction)){
+                call_user_func_array(array($ApiClass,$this->ApiAction), $params);
+            }else{
                 header($_SERVER["SERVER_PROTOCOL"]." 405 Method Not Allowed");
                 echo '{"error" : "Wrong Method"}';
                 return;
-        }
-        
-        $className = "Api_$class";
-        $actionApi = $action.$class;
-        
-        $this->LoadClassApi($class);
-        $ApiClass = new $className($params);    
-        
-        if(method_exists($ApiClass,$actionApi) == false){
+            }
+        }else{
             header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
             echo '{"error" : "Action Not Found"}';
             return;
-        }else{
-            $ApiClass->$actionApi();
         }
     }
     
     private function LoadClassApi($className){
         require API_PATH. "/$className.php";
+    }
+    
+    private function CheckMethodRequest($method){
+        if(!isset($this->methods[$method])){
+            header($_SERVER["SERVER_PROTOCOL"]." 405 Method Not Allowed");
+            echo '{"error" : "Wrong Method"}';
+            exit;
+        }
+    }
+    
+    private function prepareParams($method,$request){
+
+        switch ($method) {
+            case 'GET' :
+                $params['id'] = $request[2];
+                $params['params'] = $_GET;
+                break;
+
+            case 'POST' :
+                $params['params'] = $_POST;
+                break;
+
+            case 'PUT' :
+                $params['id'] = $request[2];
+                
+                die(var_dump($_REQUEST,$_SERVER,$_GET,$_FILES));
+                    
+                $params['params'] = $params;
+                break;
+
+            case 'DELETE' :
+                $params['id'] = $request[2];
+                if(isset($request[3]) && is_numeric($request[3])){
+                    $params['params'] = array("chield_id" => $request[3]);
+                }
+                break;
+        }
+
+        return $params;
     }
 }

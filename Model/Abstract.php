@@ -8,7 +8,7 @@ class Model_Abstract {
         $configs = parse_ini_file(CONF_PATH."/database.ini");
         $this->isConnected = true;
         try {
-            $this->datab = new PDO("mysql:host={$configs['db.host']};dbname={$configs['db.dbname']};charset=utf8", $configs['db.username'], $configs['db.password'], $configs['db.option']);
+            $this->datab = new PDO("mysql:host={$configs['db.host']};dbname={$configs['db.dbname']};charset=utf8", $configs['db.username'], $configs['db.password'],array());
             $this->datab->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->datab->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch (PDOException $e) {

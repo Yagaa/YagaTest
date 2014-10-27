@@ -3,21 +3,35 @@ Class Api_Abstract {
     
     protected $id = "";
     protected $params = "";
+    protected $headerType = "";
     
-    public function __construct($params = array()) {
+    public function __construct($params = array(), $headerType = "XML") {
         $this->id = isset($params['id'])?$params['id']:'';
         $this->params = isset($params['params'])?$params['params']:'';
+        $this->headerType = $headerType;
     }
-    
+
     protected function returnData($data = array()){
-        header('Content-type: application/json');
-        echo json_encode($data); return;
+        switch ($this->headerType){
+            case 'JSON' : 
+                header('Content-type: application/json');
+                echo json_encode($data); return;
+                
+            case 'XML' : 
+                $xml = new SimpleXMLElement('<root/>');
+                array_walk_recursive($data, array ($xml, 'addChild'));
+                print $xml->asXML();
+                return;
+                
+            default :
+                header('Content-type: application/json');
+                echo json_encode($data); return;
+        }
     }
     
     protected function handleError($message){
-        header('Content-type: application/json');
         $data['success'] = 0;
         $data['message'] = $message;
-        echo json_encode($data); return;
+        $this->returnData($data);
     }
 }
