@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class to prepare 
+ */
 Class Router {
 
     
@@ -14,7 +17,10 @@ Class Router {
         "DELETE"    =>  "Delete"
     );
     
+    
     public function init(){
+        
+        // Get Method
         $request["method"] = $_SERVER['REQUEST_METHOD'];
         $request["request"] = explode("/", $_SERVER['REQUEST_URI']);
         
@@ -27,6 +33,7 @@ Class Router {
         
         if(in_array($this->ApiController,$this->routes)){
             $output = isset($params['params']['output'])?$params['params']['output'] : false;
+            
             $this->LoadClassApi($this->ApiController);
             $className = "Api_".$this->ApiController;
             $ApiClass = new $className($params,$output);  
