@@ -25,8 +25,12 @@ class Model_Abstract {
     public function getRow($query, $params = array()) {
         try {
             $stmt = $this->datab->prepare($query);
-            $stmt->execute($params);
+            try {
+                $stmt->execute($params);
             return $stmt->fetch();
+            } catch (Exception $e) {
+                return false;
+            }
         } catch (PDOException $e) {
             throw new Exception($e->getMessage());
         }
@@ -35,8 +39,12 @@ class Model_Abstract {
     public function getRows($query, $params = array()) {
         try {
             $stmt = $this->datab->prepare($query);
-            $stmt->execute($params);
-            return $stmt->fetchAll();
+            try {
+                $stmt->execute($params);
+                return $stmt->fetchAll();
+            } catch (Exception $e) {
+                return false;
+            }
         } catch (PDOException $e) {
             throw new Exception($e->getMessage());
         }
@@ -45,8 +53,13 @@ class Model_Abstract {
     public function insertRow($query, $params) {
         try {
             $stmt = $this->datab->prepare($query);
-            $stmt->execute($params);
-            return $stmt->rowCount();
+            try {
+                $stmt->execute($params);
+                return $stmt->rowCount();
+            } catch (Exception $e) {
+                return false;
+            }
+
         } catch (PDOException $e) {
             throw new Exception($e->getMessage());
         }

@@ -5,7 +5,7 @@ Class Api_Abstract {
     protected $params = "";
     protected $headerType = "";
     
-    public function __construct($params = array(), $headerType = "XML") {
+    public function __construct($params = array(), $headerType = "JSON") {
         $this->id = isset($params['id'])?$params['id']:'';
         $this->params = isset($params['params'])?$params['params']:'';
         $this->headerType = $headerType;
@@ -14,7 +14,7 @@ Class Api_Abstract {
     protected function returnData($data = array()){
         switch ($this->headerType){
             case 'JSON' : 
-                header('Content-type: application/json');
+                //header('Content-type: application/json');
                 echo json_encode($data); return;
                 
             case 'XML' : 
@@ -24,7 +24,7 @@ Class Api_Abstract {
                 return;
                 
             default :
-                header('Content-type: application/json');
+                //header('Content-type: application/json');
                 echo json_encode($data); return;
         }
     }
