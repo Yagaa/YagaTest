@@ -2,6 +2,9 @@
 require MODEL_PATH."/Favorite.php";
 require API_PATH."/Abstract.php";
 
+/**
+ * 
+ */
 Class Api_Favorite extends Api_Abstract{
 
     public function GetFavorite(){
@@ -23,8 +26,7 @@ Class Api_Favorite extends Api_Abstract{
             $delete = $model->DeleteSongFromFavorite($this->id,$songId);
             $data['message'] = "Song deleted from Favorite";
         }else{
-            // FUNCTON TO DELETE A FAVORITE
-            $data['message'] = "Favorite deleted";
+            $this->handleError("Nothing was deleted");
         }
         if($delete == 1){
             $data['success'] = 1;

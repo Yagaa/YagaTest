@@ -14,8 +14,8 @@ http://yagatest.com/favorite/USER_ID
 ADD SONG TO FAVORITE (POST)
 http://yagatest.com/favorite/USER_ID => track_id = TRACK_ID
 
-ADD SONG TO FAVORITE (DELETE)
+DELETE SONG TO FAVORITE (DELETE)
 http://yagatest.com/favorite/USER_ID/TRACK_ID
 
-CHANGE OUTPUT WITH PARAM output
+CHANGE OUTPUT WITH PARAM output (JSON,XML)
 http://yagatest.com/user/USER_ID?output=XML

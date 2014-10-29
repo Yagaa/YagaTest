@@ -16,7 +16,7 @@ class Model_Abstract {
             throw new Exception($e->getMessage());
         }
     }
-
+    
     public function Disconnect() {
         $this->datab = null;
         $this->isConnected = false;
@@ -73,4 +73,7 @@ class Model_Abstract {
         return $this->insertRow($query, $params);
     }
 
+    public function __destruct() {
+        $this->Disconnect();
+    }
 }

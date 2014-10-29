@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Class Abstract for All Api Class
+ */
 Class Api_Abstract {
     
     protected $id = "";
@@ -10,7 +14,11 @@ Class Api_Abstract {
         $this->params = isset($params['params'])?$params['params']:'';
         $this->headerType = $headerType;
     }
-
+    
+    /**
+     * Call for all Api return when it success
+     * @param array $data
+     */
     protected function returnData($data = array()){
         switch ($this->headerType){
             case 'JSON' : 
@@ -28,7 +36,11 @@ Class Api_Abstract {
                 echo json_encode($data); return;
         }
     }
-    
+
+    /**
+     * Call for all Api return when it's an error
+     * @param string $message
+     */
     protected function handleError($message){
         $data['success'] = 0;
         $data['message'] = $message;
